@@ -23,7 +23,12 @@ typedef struct Player {
 
 int main(int argc, char *argv[])
 {
+    SceCtrlData pad;
+
     setupExitCallback();
+
+    sceCtrlSetSamplingCycle(0);
+    sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 
     triLogInit();
     triMemoryInit();
@@ -42,6 +47,15 @@ int main(int argc, char *argv[])
         triClear(0xFFFFFFFF);//color a b g r
 
         triTimerUpdate(deltaTime);
+
+        sceCtrlReadBufferPositive(&pad, 1);
+        if(pad.Buttons != 0)
+        {
+            if(pad.Buttons & PSP_CTRL_RIGHT)
+                player.x += 1.0f;
+            if(pad.Buttons & PSP_CTRL_LEFT)
+                player.x -= 1.0f;
+        }
 
 
         player.y += gravity * triTimerPeekDeltaTime(deltaTime);
