@@ -31,17 +31,20 @@ typedef struct Floor {
     float width, height;
 } Floor;
 
-int map[10][10] = { 
-                    { 0, 0, 2, 0, 1, 0, 0, 0, 0, 0} , 
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} , 
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,                   
-                    { 0, 0, 2, 0, 1, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,  
-                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}          
+const int ROW = 10;
+const int COL = 15;
+
+int map[ROW][COL] = { 
+                    { 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5} , 
+                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} , 
+                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
+                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
+                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
+                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,                   
+                    {10, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8} ,
+                    { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3} , //floor
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
                 };
 
 int main(int argc, char *argv[])
@@ -61,7 +64,7 @@ int main(int argc, char *argv[])
 
     float gravity = 100.0f;
 
-    Floor floor { 64.0f, 100.0f, 500.0f, 30.0f};
+    Floor floor { 0, 224.0f, 500.0f, 30.0f};
 
 
     //load sprites
@@ -83,7 +86,7 @@ int main(int argc, char *argv[])
 
     while(isRunning())
     {
-        triClear(0xFFFFFFFF);//color a b g r
+        triClear(0xFF51383F);//color a b g r
 
         triTimerUpdate(deltaTime);
 
@@ -124,21 +127,36 @@ int main(int argc, char *argv[])
 
 
 
-        for(int y = 0;y < 10;y++)
+        for(int y = 0;y < ROW;y++)
         {
-            for(int x = 0;x < 10;x++)
+            for(int x = 0;x < COL;x++)
             {
                 if(map[y][x] == 1)
-                    triDrawRect(x * 20, y * 20, 20.0f, 20.0f, 0xff00ffff);
+                    triDrawImage(x * 32, y * 32, 32, 32, 64, 256, 96, 288, terrainSpriteSheet);
                 else if(map[y][x] == 2)
-                    triDrawRect(x * 20, y * 20, 20.0f, 20.0f, 0xff0000ff);
+                    triDrawImage(x * 32, y * 32, 32, 32, 64, 224, 96, 256, terrainSpriteSheet); //draw wall background
+                else if(map[y][x] == 3)
+                    triDrawImage(x * 32, y * 32, 32, 32, 64, 32, 96, 64, terrainSpriteSheet); //draw floor
+                else if(map[y][x] == 4)
+                    triDrawImage(x * 32, y * 32, 32, 32, 32, 224, 64, 256, terrainSpriteSheet);
+                else if(map[y][x] == 5)
+                    triDrawImage(x * 32, y * 32, 32, 32, 96, 224, 128, 256, terrainSpriteSheet);
+                else if(map[y][x] == 6)
+                    triDrawImage(x * 32, y * 32, 32, 32, 96, 256, 128, 288, terrainSpriteSheet);
+                else if(map[y][x] == 7)
+                    triDrawImage(x * 32, y * 32, 32, 32, 64, 288, 96, 320, terrainSpriteSheet);
+                else if(map[y][x] == 8)
+                    triDrawImage(x * 32, y * 32, 32, 32, 96, 288, 128, 320, terrainSpriteSheet);
+                else if(map[y][x] == 9)
+                    triDrawImage(x * 32, y * 32, 32, 32, 32, 256, 64, 288, terrainSpriteSheet);
+                else if(map[y][x] == 10)
+                    triDrawImage(x * 32, y * 32, 32, 32, 32, 288, 64, 320, terrainSpriteSheet);
             }
         }
 
-
         //draw floor
-        triDrawRect(floor.x, floor.y, floor.width, floor.height, 0xff00ffff);
-        triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
+        //triDrawRect(floor.x, floor.y, floor.width, floor.height, 0xff00ffff);
+        //triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
 
 
         //draw player
