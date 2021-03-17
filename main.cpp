@@ -20,6 +20,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 typedef struct Player {
     float x, y;
     float width, height;
+    float speed;
+    float jumpHeight;
     bool onFloor;
 } Player;
 
@@ -41,7 +43,7 @@ int main(int argc, char *argv[])
     triMemoryInit();
     triInit(GU_PSM_8888, 1);
 
-    Player player { 64.0f, 64.0f, 10.0f, 10.0f, false};
+    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 2500.0f, false};
 
     float gravity = 100.0f;
 
@@ -59,9 +61,11 @@ int main(int argc, char *argv[])
         if(pad.Buttons != 0)
         {
             if(pad.Buttons & PSP_CTRL_RIGHT)
-                player.x += 1.0f;
+                player.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
             if(pad.Buttons & PSP_CTRL_LEFT)
-                player.x -= 1.0f;
+                player.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
+            if(pad.Buttons & PSP_CTRL_UP && player.onFloor)
+                player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
         }
 
         if(player.x < floor.x + floor.width &&
