@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
     triImage* playerSpriteRun = triImageLoad("assets/sprites/king_Run (78x58).png" , 0);
     triImage* playerSpriteJump = triImageLoad("assets/sprites/king_Jump (78x58).png" , 0);
 
+    triImage* terrainSpriteSheet = triImageLoad("assets/sprites/Terrain (32x32).png" , 0);
+
     //animations
     triImageAnimation* playerAnimationIdle = triImageAnimationFromSheet(playerSpriteIdle, 78.0f, 58.0f, 11, 1, 100);
     triImageAnimationStart(playerAnimationIdle);
@@ -133,25 +135,28 @@ int main(int argc, char *argv[])
             }
         }
 
+
         //draw floor
         triDrawRect(floor.x, floor.y, floor.width, floor.height, 0xff00ffff);
+        triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
+
 
         //draw player
         triDrawRect(player.x, player.y, player.width, player.height, 0xff0000ff);
 
         if(!player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 78.0f/2.0f , player.y - 58.0f/2.0f, playerAnimationIdle);
+            triDrawImageAnimation(player.x - 78.0f/2.0f + player.width , player.y - 58.0f/2.0f, playerAnimationIdle);
             triImageAnimationUpdate(playerAnimationIdle);
         }
         else if(player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 78.0f/2.0f , player.y - 58.0f/2.0f, playerAnimationRun);
+            triDrawImageAnimation(player.x - 78.0f/2.0f + player.width , player.y - 58.0f/2.0f, playerAnimationRun);
             triImageAnimationUpdate(playerAnimationRun); 
         }
         else 
         {
-            triDrawSprite(player.x - 78.0f/2.0f , player.y - 58.0f/2.0f, 0, 0, playerSpriteJump);
+            triDrawSprite(player.x - 78.0f/2.0f + player.width , player.y - 58.0f/2.0f, 0, 0, playerSpriteJump);
         }
 
         triSwapbuffers();
@@ -160,6 +165,7 @@ int main(int argc, char *argv[])
     triImageFree(playerSpriteIdle);
     triImageFree(playerSpriteRun);
     triImageFree(playerSpriteJump);
+    triImageFree(terrainSpriteSheet);
     triTimerFree(deltaTime);
     triClose();
     triMemoryCheck();
