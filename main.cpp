@@ -23,12 +23,26 @@ typedef struct Player {
     float speed;
     float jumpHeight;
     bool onFloor;
+    bool isMoving;
 } Player;
 
 typedef struct Floor {
     float x, y;
     float width, height;
 } Floor;
+
+int map[10][10] = { 
+                    { 0, 0, 2, 0, 1, 0, 0, 0, 0, 0} , 
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} , 
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,                   
+                    { 0, 0, 2, 0, 1, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0} ,  
+                    { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}          
+                };
 
 int main(int argc, char *argv[])
 {
@@ -43,11 +57,25 @@ int main(int argc, char *argv[])
     triMemoryInit();
     triInit(GU_PSM_8888, 1);
 
-    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 2500.0f, false};
+    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 2500.0f, false, false};
 
     float gravity = 100.0f;
 
-    Floor floor { 64.0f, 100.0f, 100.0f, 30.0f};
+    Floor floor { 64.0f, 100.0f, 500.0f, 30.0f};
+
+
+    //load sprites
+    triImage* playerSpriteIdle = triImageLoad("assets/sprites/king_Idle (78x58).png", 0);
+    triImage* playerSpriteRun = triImageLoad("assets/sprites/king_Run (78x58).png" , 0);
+    triImage* playerSpriteJump = triImageLoad("assets/sprites/king_Jump (78x58).png" , 0);
+
+    //animations
+    triImageAnimation* playerAnimationIdle = triImageAnimationFromSheet(playerSpriteIdle, 78.0f, 58.0f, 11, 1, 100);
+    triImageAnimationStart(playerAnimationIdle);
+
+    triImageAnimation* playerAnimationRun = triImageAnimationFromSheet(playerSpriteRun,  78.0f, 58.0f, 8, 1, 100);
+    triImageAnimationStart(playerAnimationRun);
+
 
     triTimer* deltaTime = triTimerCreate();
 
@@ -61,12 +89,21 @@ int main(int argc, char *argv[])
         if(pad.Buttons != 0)
         {
             if(pad.Buttons & PSP_CTRL_RIGHT)
+            {
                 player.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
-            if(pad.Buttons & PSP_CTRL_LEFT)
+                player.isMoving = true;
+            }
+            else if(pad.Buttons & PSP_CTRL_LEFT)
+            {
                 player.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
+                player.isMoving = true;
+            }
             if(pad.Buttons & PSP_CTRL_UP && player.onFloor)
                 player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
         }
+        if(pad.Buttons == 0)
+            player.isMoving = false;
+
 
         if(player.x < floor.x + floor.width &&
             player.x + player.width > floor.x &&
@@ -84,15 +121,45 @@ int main(int argc, char *argv[])
             player.y += gravity * triTimerPeekDeltaTime(deltaTime);
 
 
+
+        for(int y = 0;y < 10;y++)
+        {
+            for(int x = 0;x < 10;x++)
+            {
+                if(map[y][x] == 1)
+                    triDrawRect(x * 20, y * 20, 20.0f, 20.0f, 0xff00ffff);
+                else if(map[y][x] == 2)
+                    triDrawRect(x * 20, y * 20, 20.0f, 20.0f, 0xff0000ff);
+            }
+        }
+
         //draw floor
         triDrawRect(floor.x, floor.y, floor.width, floor.height, 0xff00ffff);
 
         //draw player
         triDrawRect(player.x, player.y, player.width, player.height, 0xff0000ff);
 
+        if(!player.isMoving && player.onFloor)
+        {
+            triDrawImageAnimation(player.x - 78.0f/2.0f , player.y - 58.0f/2.0f, playerAnimationIdle);
+            triImageAnimationUpdate(playerAnimationIdle);
+        }
+        else if(player.isMoving && player.onFloor)
+        {
+            triDrawImageAnimation(player.x - 78.0f/2.0f , player.y - 58.0f/2.0f, playerAnimationRun);
+            triImageAnimationUpdate(playerAnimationRun); 
+        }
+        else 
+        {
+            triDrawSprite(player.x - 78.0f/2.0f , player.y - 58.0f/2.0f, 0, 0, playerSpriteJump);
+        }
+
         triSwapbuffers();
     }
 
+    triImageFree(playerSpriteIdle);
+    triImageFree(playerSpriteRun);
+    triImageFree(playerSpriteJump);
     triTimerFree(deltaTime);
     triClose();
     triMemoryCheck();
