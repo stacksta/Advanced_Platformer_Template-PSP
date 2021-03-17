@@ -24,6 +24,7 @@ typedef struct Player {
     float jumpHeight;
     bool onFloor;
     bool isMoving;
+    bool isJump;
 } Player;
 
 typedef struct Floor {
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
     triMemoryInit();
     triInit(GU_PSM_8888, 1);
 
-    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 2500.0f, false, false};
+    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 400.0f, false, false, false};
 
     float gravity = 100.0f;
 
@@ -104,11 +105,16 @@ int main(int argc, char *argv[])
                 player.isMoving = true;
             }
             if(pad.Buttons & PSP_CTRL_UP && player.onFloor)
-                player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
+                player.isJump = true;
         }
         if(pad.Buttons == 0)
             player.isMoving = false;
 
+        if(player.isJump)
+        {
+            player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
+            player.jumpHeight -= 10.0f;
+        }
 
         if(player.x < floor.x + floor.width &&
             player.x + player.width > floor.x &&
@@ -117,6 +123,8 @@ int main(int argc, char *argv[])
         {
             // floor detected
             player.onFloor = true;
+            player.isJump = false;
+            player.jumpHeight = 400.0f;
         }
         else 
             player.onFloor = false;
