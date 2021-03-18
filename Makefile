@@ -1,8 +1,8 @@
 TARGET = PLATFORMER
-OPENTRI = include/openTRI/streams/streams.o  include/openTRI/triVAlloc.o include/openTRI/triMemory.o include/openTRI/triRefcount.o include/openTRI/triImage.o include/openTRI/rle.o include/openTRI/triGraphics.o include/openTRI/triLog.o include/openTRI/triInput.o ./include/openTRI/triWav.o include/openTRI/triAudioLib.o include/openTRI/triTimer.o 
+OPENTRI = include/openTRI/streams/streams.o  include/openTRI/triVAlloc.o include/openTRI/triMemory.o include/openTRI/triRefcount.o include/openTRI/triImage.o include/openTRI/rle.o include/openTRI/triGraphics.o include/openTRI/triLog.o include/openTRI/triInput.o ./include/openTRI/triWav.o include/openTRI/triAudioLib.o include/openTRI/triTimer.o include/openTRI/triVMath_vfpu.o include/openTRI/triFont.o
 OBJS = $(OPENTRI) main.o callback.o 
 
-INCDIR += ./include ./include/openTRI/
+INCDIR += ./include ./include/openTRI/ ./include/freetype
 CFLAGS = -G0 -Wall -O3 -DUSE_VFPU=true -g -D__PSP__ -D_DEBUG -D_DEBUG_LOG -D_DEBUG_MEMORY -DTRI_DDLIST -DTRI_SUPPORT_PNG -DTRI_SUPPORT_FT 
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti -fpermissive
 ASFLAGS = $(CFLAGS)
