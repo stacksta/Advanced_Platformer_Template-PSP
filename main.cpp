@@ -3,6 +3,8 @@
 #include <pspdebug.h>
 #include <pspctrl.h>
 
+#include <vector>
+
 #include "callback.h"
 
 extern "C" {
@@ -25,12 +27,13 @@ typedef struct Player {
     bool onFloor;
     bool isMoving;
     bool isJump;
+    bool isRight;
 } Player;
 
-typedef struct Floor {
-    float x, y;
-    float width, height;
-} Floor;
+// typedef struct Floor {
+//     float x, y;
+//     float width, height;
+// } Floor;
 
 const int ROW = 10;
 const int COL = 15;
@@ -61,11 +64,20 @@ int main(int argc, char *argv[])
     triMemoryInit();
     triInit(GU_PSM_8888, 1);
 
-    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 400.0f, false, false, false};
+    Player player { 64.0f, 64.0f, 10.0f, 10.0f, 50.0f, 400.0f, false, false, false, true};
 
     float gravity = 100.0f;
 
-    Floor floor { 0, 224.0f, 500.0f, 30.0f};
+    //Floor floor { 0, 224.0f, 500.0f, 30.0f};
+
+    std::vector<std::pair<int, int>> floorTiles;
+    for(int i=0;i < ROW * COL;i++)
+    {
+        int x = i / COL;
+        int y = i % ROW;
+        if(map[y][x] == 3)
+            floorTiles.push_back(std::make_pair(x, y));
+    }
 
 
     //load sprites
@@ -92,20 +104,26 @@ int main(int argc, char *argv[])
         triTimerUpdate(deltaTime);
 
         sceCtrlReadBufferPositive(&pad, 1);
+
         if(pad.Buttons != 0)
         {
             if(pad.Buttons & PSP_CTRL_RIGHT)
             {
                 player.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
                 player.isMoving = true;
+                player.isRight = true;
             }
             else if(pad.Buttons & PSP_CTRL_LEFT)
             {
                 player.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
                 player.isMoving = true;
+                player.isRight = false;
             }
             if(pad.Buttons & PSP_CTRL_UP && player.onFloor)
+            {
                 player.isJump = true;
+                player.onFloor = false;
+            }
         }
         if(pad.Buttons == 0)
             player.isMoving = false;
@@ -116,19 +134,26 @@ int main(int argc, char *argv[])
             player.jumpHeight -= 10.0f;
         }
 
-        if(player.x < floor.x + floor.width &&
-            player.x + player.width > floor.x &&
-            player.y < floor.y + floor.height &&
-            player.y + player.height > floor.y) 
+        for(int i = 0;i < floorTiles.size(); i++)
         {
-            // floor detected
-            player.onFloor = true;
-            player.isJump = false;
-            player.jumpHeight = 400.0f;
-        }
-        else 
-            player.onFloor = false;
+            int x = floorTiles[i].first * 32;
+            int y = floorTiles[i].second * 32;
+            int width = x + 32;
+            int height = y + 32;
 
+            if(player.x < x + width &&
+                player.x + player.width > x &&
+                player.y < y + height &&
+                player.y + player.height > y) 
+            {            
+                // floor detected
+                player.onFloor = true;
+                player.isJump = false;
+                player.jumpHeight = 400.0f;
+
+                player.y -= 3.0f;
+            } 
+        }
 
         if(!player.onFloor)
             player.y += gravity * triTimerPeekDeltaTime(deltaTime);
@@ -163,7 +188,7 @@ int main(int argc, char *argv[])
         }
 
         //draw floor
-        //triDrawRect(floor.x, floor.y, floor.width, floor.height, 0xff00ffff);
+        //triDrawRect(floorTiles[0].first * 32, floorTiles[0].second * 32, 32, 32, 0xff00ffff);
         //triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
 
 
