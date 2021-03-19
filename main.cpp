@@ -20,6 +20,16 @@ extern "C" {
 PSP_MODULE_INFO("PLATFORMER", 0x0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
+/*from libpspmath*/
+float vfpu_sqrtf(float x) {
+	float result;
+	__asm__ volatile (
+		"mtv     %1, S000\n"
+		"vsqrt.s S000, S000\n"
+		"mfv     %0, S000\n"
+	: "=r"(result) : "r"(x));
+	return result;
+}
 
 typedef struct Player {
     float x, y;
@@ -32,30 +42,69 @@ typedef struct Player {
     bool isRight;
 } Player;
 
-// typedef struct Floor {
-//     float x, y;
-//     float width, height;
-// } Floor;
+typedef struct Enemy {
+    float x, y;
+    float width, height;
+    float speed;
+    bool onFloor;
+    bool isMoving;
+    bool isRight;
+} Enemy;
+
+typedef struct Floor {
+    float x, y;
+    float width, height;
+} Floor;
 
 typedef struct Camera {
     float x, y;
 } Camera;
 
 const int ROW = 10;
-const int COL = 16;
+const int COL = 20;
 
 int map[ROW][COL] = { 
-                    { 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 0} , 
-                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0} , 
-                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0} ,
-                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0} ,
-                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0} ,
-                    { 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0} ,                   
-                    {10, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 3} ,
-                    { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0} , //floor
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
+                    {11, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5} , 
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} , 
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 8} ,                   
+                    {11,10, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 3, 3, 3, 3, 3} ,
+                    {12, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0} , //floor
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
                 };
+
+int decor[ROW][COL] = { 
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , 
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , 
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 1, 2, 0, 5, 6, 0, 1, 2, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 3, 4, 0, 7, 8, 0, 3, 4, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,                   
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , //floor
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
+                };
+
+bool checkPlayerOnFloor(Player *p, Floor *f, Camera *c)
+{
+    if(p->x < f->x + f->width + c->x &&
+            p->x + p->width > f->x + c->x &&
+            p->y < f->y + f->height + c->y &&
+            p->y + p->height > f->y + c->y) 
+        return true;
+    else 
+        return false;
+}
+
+float getDistance(float x1, float y1, float x2, float y2)
+{
+    float a = (x2 - x1) * (x2 - x1) - (y2 - y1) * (y2 - y1);
+    return vfpu_sqrtf(a);
+}
 
 int main(int argc, char *argv[])
 {
@@ -73,20 +122,23 @@ int main(int argc, char *argv[])
 
     Player player { 480.0f/2.0f, 272.0f/2.0f, 10.0f, 10.0f, 50.0f, 400.0f, false, false, false, true};
 
+    Enemy en1 { 480.0f/2.0f + 64.0f, 272.0f/2.0f, 10.0f, 10.0f, 10.0f, false, false, false};
+
     Camera camera { 0, 0};
 
     float gravity = 100.0f;
 
-    //Floor floor { 0, 224.0f, 500.0f, 30.0f};
+    Floor floor { 0, 224.0f, 480.0f, 30.0f};
+    Floor floor1 { 480.0f, 192.0f, 160.0f, 32.0f};
 
-    std::vector<std::pair<int, int>> floorTiles;
-    for(int i=0;i < ROW * COL;i++)
-    {
-        int x = i / COL;
-        int y = i % ROW;
-        if(map[y][x] == 3)
-            floorTiles.push_back(std::make_pair(x, y));
-    }
+    // std::vector<std::pair<int, int>> floorTiles;
+    // for(int i=0;i < ROW * COL;i++)
+    // {
+    //     int x = i / COL;
+    //     int y = i % ROW;
+    //     if(map[y][x] == 3)
+    //         floorTiles.push_back(std::make_pair(x, y));
+    // }
 
 
     //load sprites
@@ -95,7 +147,13 @@ int main(int argc, char *argv[])
     triImage* playerSpriteJump = triImageLoad("assets/sprites/king_Jump (78x58).png" , 0);
 
     triImage* terrainSpriteSheet = triImageLoad("assets/sprites/Terrain (32x32).png" , 0);
+    triImage* decorSpriteSheet = triImageLoad("assets/sprites/Decorations (32x32).png" , 0);
 
+    triImage* enemySpriteIdle = triImageLoad("assets/sprites/pig_Idle (34x28).png" , 0);
+    triImage* enemySpriteRun = triImageLoad("assets/sprites/pig_Run (34x28).png" , 0);
+
+    triImage* doorSprite = triImageLoad("assets/sprites/door_Idle.png", 0);
+    
     //animations
     triImageAnimation* playerAnimationIdle = triImageAnimationFromSheet(playerSpriteIdle, 78.0f, 58.0f, 11, 1, 100);
     triImageAnimationStart(playerAnimationIdle);
@@ -103,6 +161,11 @@ int main(int argc, char *argv[])
     triImageAnimation* playerAnimationRun = triImageAnimationFromSheet(playerSpriteRun,  78.0f, 58.0f, 8, 1, 100);
     triImageAnimationStart(playerAnimationRun);
 
+    triImageAnimation* enemyAnimationIdle = triImageAnimationFromSheet(enemySpriteIdle, 34.0f, 28.0f, 11, 1, 100);
+    triImageAnimationStart(enemyAnimationIdle);
+
+    triImageAnimation* enemyAnimationRun = triImageAnimationFromSheet(enemySpriteRun,  34.0f, 28.0f, 6, 1, 100);
+    triImageAnimationStart(enemyAnimationRun);
 
     triTimer* deltaTime = triTimerCreate();
 
@@ -149,33 +212,90 @@ int main(int argc, char *argv[])
             camera.y += 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
         }
 
-        for(int i = 0;i < floorTiles.size(); i++)
+        // for(int i = 0;i < floorTiles.size(); i++)
+        // {
+        //     int x = floorTiles[i].first * 32;
+        //     int y = floorTiles[i].second * 32;
+        //     int width = x + 32;
+        //     int height = y + 32;
+
+        //     if(player.x < x + width + camera.x &&
+        //         player.x + player.width > x + camera.x &&
+        //         player.y < y + height + camera.y &&
+        //         player.y + player.height > y + camera.y) 
+        //     {            
+        //         // floor detected
+        //         player.onFloor = true;
+        //         player.isJump = false;
+        //         player.jumpHeight = 400.0f;
+
+        //         //player.y -= 3.0f;
+        //         camera.y += 3.0f;
+        //     } 
+        // }
+
+        if(checkPlayerOnFloor(&player, &floor, &camera) || checkPlayerOnFloor(&player, &floor1, &camera))
+        {            
+            // floor detected
+            player.onFloor = true;
+            player.isJump = false;
+            player.jumpHeight = 400.0f;
+
+            //player.y -= 3.0f;
+            //camera.y += 3.0f;
+        } 
+        else 
         {
-            int x = floorTiles[i].first * 32;
-            int y = floorTiles[i].second * 32;
-            int width = x + 32;
-            int height = y + 32;
-
-            if(player.x < x + width + camera.x &&
-                player.x + player.width > x + camera.x &&
-                player.y < y + height + camera.y &&
-                player.y + player.height > y + camera.y) 
-            {            
-                // floor detected
-                player.onFloor = true;
-                player.isJump = false;
-                player.jumpHeight = 400.0f;
-
-                //player.y -= 3.0f;
-                camera.y += 3.0f;
-            } 
+            player.onFloor = false;
         }
+
 
         if(!player.onFloor)
         {
             //player.y += gravity * triTimerPeekDeltaTime(deltaTime);
             camera.y -= gravity * triTimerPeekDeltaTime(deltaTime);
         }
+
+        
+        if(en1.x + camera.x < floor.x + floor.width + camera.x &&
+            en1.x + camera.x + en1.width > floor.x + camera.x &&
+            en1.y + camera.y < floor.y + floor.height + camera.y &&
+            en1.y + en1.height + camera.y > floor.y + camera.y) 
+        {
+            en1.onFloor = true;
+        }
+        else 
+            en1.onFloor = false;
+
+        if(!en1.onFloor)
+        {
+           en1.y += gravity * triTimerPeekDeltaTime(deltaTime); 
+        }
+
+        /*ai*/
+        if(getDistance(player.x, player.y, en1.x + camera.x, en1.y + camera.y) < 150.0f)
+        {
+            if(player.x < en1.x + camera.x) 
+            {
+                en1.x -= 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime); 
+                en1.isMoving = true;
+            }
+            else if(player.x > en1.x + camera.x)
+            {
+                en1.x += 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);   
+                en1.isMoving = true;  
+            }
+            else 
+            {
+                en1.x = en1.x;
+            }
+        }
+        else 
+        {
+            en1.isMoving = false;
+        }
+
+        
 
 
 
@@ -203,14 +323,55 @@ int main(int argc, char *argv[])
                     triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 32, 256, 64, 288, terrainSpriteSheet);
                 else if(map[y][x] == 10)
                     triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 32, 288, 64, 320, terrainSpriteSheet);
+                else if(map[y][x] == 11)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 64, 128, 96, terrainSpriteSheet);
+                else if(map[y][x] == 12)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 352, 32, 383, 64, terrainSpriteSheet);
+
+
+                /*draw decor*/
+                if(decor[y][x] == 1)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 64, 96, 96, 128, decorSpriteSheet);
+                else if(decor[y][x] == 2)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 96, 128, 128, decorSpriteSheet);
+                else if(decor[y][x] == 3)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 64, 128, 96, 160, decorSpriteSheet);
+                else if(decor[y][x] == 4)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 128, 128, 160, decorSpriteSheet);
+                
+                else if(decor[y][x] == 5)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 128, 96, 160, 128, decorSpriteSheet);
+                else if(decor[y][x] == 6)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 160, 96, 192, 128, decorSpriteSheet);
+                else if(decor[y][x] == 7)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 128, 128, 160, 160, decorSpriteSheet);
+                else if(decor[y][x] == 8)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 160, 128, 192, 160, decorSpriteSheet); 
+                
             }
         }
 
         //draw floor
-        //triDrawRect(floorTiles[floorTiles.size() - 1].first * 32 + camera.x, floorTiles[floorTiles.size() - 1].second * 32 + camera.y, 32, 32, 0xff00ffff);
-         
+        //triDrawRect(floor1.x + camera.x, floor1.y + camera.y, floor1.width, floor1.height, 0xff00ffff);
+        
+        //draw door
+        triDrawSprite(80.0f + camera.x, 272.0f/2.0f + 32.0f + camera.y, 0, 0, doorSprite);
 
-        //triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
+        //draw enemy
+        triDrawRect(en1.x + camera.x, en1.y + camera.y, en1.width, en1.height, 0xff0000ff);
+
+        if(!en1.isMoving)
+        {
+            triDrawImageAnimation(en1.x - 34.0f/2.0f + en1.width - 10.0f + camera.x, en1.y - 28.0f/2.0f + camera.y, enemyAnimationIdle);
+            triImageAnimationUpdate(enemyAnimationIdle);
+        }
+        else if(en1.isMoving)
+        {
+            triDrawImageAnimation(en1.x - 34.0f/2.0f + en1.width - 10.0f + camera.x, en1.y - 28.0f/2.0f + camera.y, enemyAnimationRun);
+            triImageAnimationUpdate(enemyAnimationRun);       
+        }
+
+        // triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
 
 
         //draw player
@@ -232,19 +393,23 @@ int main(int argc, char *argv[])
         }
 
         triFontActivate(0);
-		triFontPrintf(0 , 0, 0xFFFFFFFF, "FPS: %.2f - MAX: %.2f - MIN: %.2f", triFps(), triFpsMax(), triFpsMin());
-		triFontPrintf(0 , 10, 0xFFFFFFFF, "CPU: %.2f%% - GPU: %.2f%%", triCPULoad(), triGPULoad());
+        triFontPrintf(0 , 0, 0xFFFFFFFF, "FPS: %.2f - MAX: %.2f - MIN: %.2f", triFps(), triFpsMax(), triFpsMin());
+        triFontPrintf(0 , 10, 0xFFFFFFFF, "CPU: %.2f%% - GPU: %.2f%%", triCPULoad(), triGPULoad());
         triFontPrintf(0, 20, 0xFFFFFFFF, "Player: x = %.2f , y = %.2f", player.x  - camera.x, player.y - camera.y);
         triFontPrintf(0, 30, 0xFFFFFFFF, "onFloor: %d", player.onFloor);
         triFontPrintf(0, 40, 0xFFFFFFFF, "Camera: x = %.2f , y = %.2f", camera.x, camera.y);
+        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x + camera.x, en1.y + camera.y));
 
         triSwapbuffers();
     }
 
+    triImageFree(enemySpriteIdle);
     triImageFree(playerSpriteIdle);
     triImageFree(playerSpriteRun);
     triImageFree(playerSpriteJump);
+    triImageFree(decorSpriteSheet);
     triImageFree(terrainSpriteSheet);
+    triImageFree(doorSprite);
     triTimerFree(deltaTime);
     triClose();
     triMemoryCheck();
