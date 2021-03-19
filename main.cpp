@@ -3,6 +3,7 @@
 #include <pspdebug.h>
 #include <pspctrl.h>
 
+#include <math.h>
 #include <vector>
 
 #include "callback.h"
@@ -103,7 +104,11 @@ bool checkPlayerOnFloor(Player *p, Floor *f, Camera *c)
 float getDistance(float x1, float y1, float x2, float y2)
 {
     float a = (x2 - x1) * (x2 - x1) - (y2 - y1) * (y2 - y1);
-    return vfpu_sqrtf(a);
+    a = vfpu_sqrtf(a);
+    if(isnan(a) == 0)
+        return a;
+    else 
+        return 0.0f;
 }
 
 int main(int argc, char *argv[])
