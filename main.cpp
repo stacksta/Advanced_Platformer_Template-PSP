@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     Collider playerLeft { player.x, player.y, 5.0f, 5.0f};
 
     Enemy en1 { 480.0f/2.0f + 64.0f, 272.0f/2.0f, 10.0f, 10.0f, 10.0f, false, false, false};
-    Collider enFeet1 { enFeet1.x, enFeet1.y, 5.0f, 5.0f};
+    Collider enFeet1 { en1.x, en1.y, 5.0f, 5.0f};
 
     Camera camera { 0, 0};
 
