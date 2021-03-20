@@ -103,7 +103,7 @@ bool checkPlayerOnFloor(Player *p, Floor *f, Camera *c)
 
 float getDistance(float x1, float y1, float x2, float y2)
 {
-    float a = (x2 - x1) * (x2 - x1) - (y2 - y1) * (y2 - y1);
+    float a = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
     a = vfpu_sqrtf(a);
     if(isnan(a) == 0)
         return a;
