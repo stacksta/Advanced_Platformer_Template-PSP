@@ -32,6 +32,11 @@ float vfpu_sqrtf(float x) {
 	return result;
 }
 
+typedef struct Collider {
+    float x, y;
+    float width, height;
+} Collider;
+
 typedef struct Player {
     float x, y;
     float width, height;
@@ -62,35 +67,35 @@ typedef struct Camera {
 } Camera;
 
 const int ROW = 10;
-const int COL = 20;
+const int COL = 25;
 
 int map[ROW][COL] = { 
-                    {11, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5} , 
-                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} , 
-                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
-                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
-                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6} ,
-                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 8} ,                   
-                    {11,10, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 3, 3, 3, 3, 3} ,
-                    {12, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0} , //floor
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
+                    {11,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13, 0} , 
+                    {11, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5,14} , 
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,14} ,
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,14} ,
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,14} ,
+                    {11, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 1, 1, 1, 6,14} ,                   
+                    {11,10, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 3, 3, 3, 3, 3,10, 1, 1, 6,14} ,
+                    {12, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 3,10, 7, 8,14} , //floor
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3} ,  
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
                 };
 
 int decor[ROW][COL] = { 
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , 
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , 
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 0, 0, 1, 2, 0, 5, 6, 0, 1, 2, 0, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 0, 0, 3, 4, 0, 7, 8, 0, 3, 4, 0, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,                   
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , //floor
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , 
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , 
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 1, 2, 0, 5, 6, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 3, 4, 0, 7, 8, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,                   
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , //floor
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} ,  
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}          
                 };
 
-bool checkPlayerOnFloor(Player *p, Floor *f, Camera *c)
+bool checkCollision(Collider *p, Floor *f, Camera *c)
 {
     if(p->x < f->x + f->width + c->x &&
             p->x + p->width > f->x + c->x &&
@@ -126,6 +131,9 @@ int main(int argc, char *argv[])
     triInit(GU_PSM_8888, 1);
 
     Player player { 480.0f/2.0f, 272.0f/2.0f, 10.0f, 10.0f, 50.0f, 400.0f, false, false, false, true};
+    Collider playerFeet { player.x, player.y, 5.0f, 5.0f};
+    Collider playerRight { player.x, player.y, 5.0f, 5.0f};
+    Collider playerLeft { player.x, player.y, 5.0f, 5.0f};
 
     Enemy en1 { 480.0f/2.0f + 64.0f, 272.0f/2.0f, 10.0f, 10.0f, 10.0f, false, false, false};
 
@@ -133,18 +141,13 @@ int main(int argc, char *argv[])
 
     float gravity = 100.0f;
 
-    Floor floor { 0, 224.0f, 480.0f, 30.0f};
+    Floor floor { 0, 224.0f, 480.0f, 32.0f};
     Floor floor1 { 480.0f, 192.0f, 160.0f, 32.0f};
+    Floor floor2 { 640.0f, 224.0f, 32.0f, 32.0f};
+    Floor floor3 { 672.0f, 256.0f, 128.0f, 32.0f};
 
-    // std::vector<std::pair<int, int>> floorTiles;
-    // for(int i=0;i < ROW * COL;i++)
-    // {
-    //     int x = i / COL;
-    //     int y = i % ROW;
-    //     if(map[y][x] == 3)
-    //         floorTiles.push_back(std::make_pair(x, y));
-    // }
-
+    Floor leftWall { 0, 0, 32.0f, 256.0f};
+    Floor rightWall { 768.0f, 0, 32.0f, 288.0f};
 
     //load sprites
     triImage* playerSpriteIdle = triImageLoad("assets/sprites/king_Idle (78x58).png", 0);
@@ -209,6 +212,15 @@ int main(int argc, char *argv[])
         if(pad.Buttons == 0)
             player.isMoving = false;
 
+        playerFeet.x = player.x;
+        playerFeet.y = player.y + 10.0f;
+
+        playerRight.x = player.x + 7.0f;
+        playerRight.y = player.y;
+
+        playerLeft.x = player.x - 7.0f;
+        playerLeft.y = player.y;
+
         if(player.isJump)
         {
             //player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
@@ -217,29 +229,8 @@ int main(int argc, char *argv[])
             camera.y += 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
         }
 
-        // for(int i = 0;i < floorTiles.size(); i++)
-        // {
-        //     int x = floorTiles[i].first * 32;
-        //     int y = floorTiles[i].second * 32;
-        //     int width = x + 32;
-        //     int height = y + 32;
-
-        //     if(player.x < x + width + camera.x &&
-        //         player.x + player.width > x + camera.x &&
-        //         player.y < y + height + camera.y &&
-        //         player.y + player.height > y + camera.y) 
-        //     {            
-        //         // floor detected
-        //         player.onFloor = true;
-        //         player.isJump = false;
-        //         player.jumpHeight = 400.0f;
-
-        //         //player.y -= 3.0f;
-        //         camera.y += 3.0f;
-        //     } 
-        // }
-
-        if(checkPlayerOnFloor(&player, &floor, &camera) || checkPlayerOnFloor(&player, &floor1, &camera))
+        //floor collision
+        if(checkCollision(&playerFeet, &floor, &camera) || checkCollision(&playerFeet, &floor1, &camera) || checkCollision(&playerFeet, &floor2, &camera) || checkCollision(&playerFeet, &floor3, &camera))
         {            
             // floor detected
             player.onFloor = true;
@@ -259,6 +250,15 @@ int main(int argc, char *argv[])
         {
             //player.y += gravity * triTimerPeekDeltaTime(deltaTime);
             camera.y -= gravity * triTimerPeekDeltaTime(deltaTime);
+        }
+        //wall collision
+        if(checkCollision(&playerRight, &floor1, &camera) || checkCollision(&playerRight, &floor2, &camera) || checkCollision(&playerRight, &rightWall, &camera))
+        {
+            camera.x += 1.0f;
+        }
+        if(checkCollision(&playerLeft, &floor1, &camera) || checkCollision(&playerLeft, &floor2, &camera) || checkCollision(&playerLeft, &leftWall, &camera))
+        {
+            camera.x -= 1.0f;
         }
 
         
@@ -332,6 +332,10 @@ int main(int argc, char *argv[])
                     triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 64, 128, 96, terrainSpriteSheet);
                 else if(map[y][x] == 12)
                     triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 352, 32, 383, 64, terrainSpriteSheet);
+                else if(map[y][x] == 13)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 64, 96, 96, 128, terrainSpriteSheet);
+                else if(map[y][x] == 14)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 32, 64, 64, 96, terrainSpriteSheet);                
 
 
                 /*draw decor*/
@@ -357,7 +361,7 @@ int main(int argc, char *argv[])
         }
 
         //draw floor
-        //triDrawRect(floor1.x + camera.x, floor1.y + camera.y, floor1.width, floor1.height, 0xff00ffff);
+        //triDrawRect(rightWall.x + camera.x, rightWall.y + camera.y, rightWall.width, rightWall.height, 0xff00ffff);
         
         //draw door
         triDrawSprite(80.0f + camera.x, 272.0f/2.0f + 32.0f + camera.y, 0, 0, doorSprite);
@@ -396,6 +400,11 @@ int main(int argc, char *argv[])
         {
             triDrawSprite(player.x - 78.0f/2.0f + player.width , player.y - 58.0f/2.0f, 0, 0, playerSpriteJump);
         }
+
+        // if(player.onFloor)
+        //     triDrawRect(playerLeft.x, playerLeft.y, playerLeft.width, playerLeft.height, 0xff00ff00);
+        // else
+        //     triDrawRect(playerLeft.x, playerLeft.y, playerLeft.width, playerLeft.height, 0xff0000ff);
 
         triFontActivate(0);
         triFontPrintf(0 , 0, 0xFFFFFFFF, "FPS: %.2f - MAX: %.2f - MIN: %.2f", triFps(), triFpsMax(), triFpsMin());
