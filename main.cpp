@@ -136,6 +136,7 @@ int main(int argc, char *argv[])
     Collider playerLeft { player.x, player.y, 5.0f, 5.0f};
 
     Enemy en1 { 480.0f/2.0f + 64.0f, 272.0f/2.0f, 10.0f, 10.0f, 10.0f, false, false, false};
+    Collider enFeet1 { enFeet1.x, enFeet1.y, 5.0f, 5.0f};
 
     Camera camera { 0, 0};
 
@@ -261,11 +262,14 @@ int main(int argc, char *argv[])
             camera.x -= 1.0f;
         }
 
-        
-        if(en1.x + camera.x < floor.x + floor.width + camera.x &&
-            en1.x + camera.x + en1.width > floor.x + camera.x &&
-            en1.y + camera.y < floor.y + floor.height + camera.y &&
-            en1.y + en1.height + camera.y > floor.y + camera.y) 
+        //
+        enFeet1.x = en1.x;
+        enFeet1.y = en1.y + 10.f;
+
+        if(enFeet1.x + camera.x < floor.x + floor.width + camera.x &&
+            enFeet1.x + camera.x + enFeet1.width > floor.x + camera.x &&
+            enFeet1.y + camera.y < floor.y + floor.height + camera.y &&
+            enFeet1.y + enFeet1.height + camera.y > floor.y + camera.y) 
         {
             en1.onFloor = true;
         }
@@ -404,7 +408,7 @@ int main(int argc, char *argv[])
         // if(player.onFloor)
         //     triDrawRect(playerLeft.x, playerLeft.y, playerLeft.width, playerLeft.height, 0xff00ff00);
         // else
-        //     triDrawRect(playerLeft.x, playerLeft.y, playerLeft.width, playerLeft.height, 0xff0000ff);
+        //triDrawRect(enFeet1.x + camera.x, enFeet1.y + camera.y, enFeet1.width, enFeet1.height, 0xff0000ff);
 
         triFontActivate(0);
         triFontPrintf(0 , 0, 0xFFFFFFFF, "FPS: %.2f - MAX: %.2f - MIN: %.2f", triFps(), triFpsMax(), triFpsMin());
