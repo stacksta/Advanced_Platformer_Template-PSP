@@ -7,6 +7,8 @@ typedef struct Player
     float width, height;
     float speed;
     float jumpHeight;
+    int health;
+    int maxHealth;
     bool onFloor;
     bool isMoving;
     bool isJump;
@@ -23,6 +25,7 @@ typedef struct Enemy
     bool isMoving;
     bool isRight;
     bool isAttack;
+    bool isDead;
 } Enemy;
 
 typedef struct Floor

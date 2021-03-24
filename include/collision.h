@@ -25,6 +25,17 @@ bool checkPlayerEnemyCollision(Collider *p, Enemy *e, Camera *c)
         return false;
 }
 
+bool checkPlayerCollision(Collider *p, Collider *e, Camera *c)
+{
+    if (p->x < e->x + e->width + c->x &&
+        p->x + p->width > e->x + c->x &&
+        p->y < e->y + e->height + c->y &&
+        p->y + p->height > e->y + c->y)
+        return true;
+    else
+        return false;
+}
+
 bool checkCollision(Collider *p, Floor *f, Camera *c)
 {
     if (p->x + c->x < f->x + f->width + c->x &&
