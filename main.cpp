@@ -3,12 +3,7 @@
 #include <pspdebug.h>
 #include <pspctrl.h>
 
-#include <psptypes.h>
-#include <time.h>
-#include<psprtc.h>
-
 #include <math.h>
-#include <bits/stdc++.h>
 #include <vector>
 
 #include "callback.h"
@@ -51,12 +46,12 @@ int map[ROW][COL] = {
         {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14},
         {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14},
         {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14},
-        {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14},
-        {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14},
-        {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,12, 3, 3, 3,15, 1, 1, 1, 1,14},
-        {12, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,17, 0, 0, 0, 0,15, 1, 1, 1,14}, //floor
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 9, 1, 1, 1,14},
+        {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,10,17, 1, 1, 1,14},
+        {11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 8, 8, 8, 9,17, 1, 1, 1,14},
+        {12, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,15,10,16,16,16,17,17, 1, 1, 1,14}, //floor
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11,18,19,19,19,20, 0, 3, 3, 3, 3},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
 
 int decor[ROW][COL] = {
@@ -104,9 +99,12 @@ int main(int argc, char *argv[])
     Collider playerLeft{player.x, player.y, 5.0f, 5.0f};
 
     Enemy en1{ 480.0f / 2.0f + 64.0f, 272.0f / 2.0f, 10.0f, 10.0f, 10.0f, false, false, false, false, false};
-    Collider enFeet1{ en1.x, en1.y, 5.0f, 5.0f};
-    Collider enLeft1{ en1.x, en1.y, 5.0f, 5.0f};
-    Collider enRight1{ en1.x, en1.y, 5.0f, 5.0f};
+    en1.feet.x = en1.x; en1.feet.y = en1.y; en1.feet.width = en1.feet.height = 5.0f;
+    en1.colliderLeft.x = en1.x; en1.colliderLeft.y = en1.y; en1.colliderLeft.width = en1.colliderLeft.height = 5.0f;
+    en1.colliderRight.x = en1.x; en1.colliderRight.y = en1.y; en1.colliderRight.width = en1.colliderRight.height = 5.0f;
+
+    std::vector<Enemy> enemyPool;
+    enemyPool.push_back(en1);
 
     Camera camera{0, 0};
 
@@ -241,16 +239,16 @@ int main(int argc, char *argv[])
             camera.x -= 1.0f;
         }
 
-        enFeet1.x = en1.x;
-        enFeet1.y = en1.y + 10.f;
+        en1.feet.x = en1.x;
+        en1.feet.y = en1.y + 10.f;
 
-        enLeft1.x = en1.x - 10.f;
-        enLeft1.y = en1.y;
+        en1.colliderLeft.x = en1.x - 10.f;
+        en1.colliderLeft.y = en1.y;
 
-        enRight1.x = en1.x + 10.f;
-        enRight1.y = en1.y;
+        en1.colliderRight.x = en1.x + 10.f;
+        en1.colliderRight.y = en1.y;
 
-        if(checkCollision(&enFeet1, &floor, &camera))
+        if(checkCollision(&en1.feet, &floor, &camera))
         {
             en1.onFloor = true;
         }
@@ -261,7 +259,7 @@ int main(int argc, char *argv[])
         {
             en1.y += gravity * triTimerPeekDeltaTime(deltaTime);
         }
-        if(checkCollision(&enRight1, &floor1, &camera))
+        if(checkCollision(&en1.colliderRight, &floor1, &camera))
         {
             en1.x -= 1.0f;
         }
@@ -307,7 +305,7 @@ int main(int argc, char *argv[])
                 player.jumpHeight = 420.0f;
             }
         }
-        if(checkPlayerCollision(&playerRight, &enLeft1, &camera) && !en1.isDead)
+        if(checkPlayerCollision(&playerRight, &en1.colliderLeft, &camera) && !en1.isDead)
         {
             camera.x += 1.0f * 1000.0f * triTimerPeekDeltaTime(deltaTime);
             player.isJump = true;
@@ -315,7 +313,7 @@ int main(int argc, char *argv[])
             player.jumpHeight = 250.0f;
             player.health--;
         }
-        if(checkPlayerCollision(&playerLeft, &enRight1, &camera) && !en1.isDead)
+        if(checkPlayerCollision(&playerLeft, &en1.colliderRight, &camera) && !en1.isDead)
         {
             camera.x -= 1.0f * 1000.0f * triTimerPeekDeltaTime(deltaTime);
             player.isJump = true;
@@ -340,6 +338,29 @@ int main(int argc, char *argv[])
                     triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 32, 16, 48, 32, terrainSpriteSheet);
                 else if(map[y][x] == 14)
                     triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0, 16, 16, 32, terrainSpriteSheet);
+                else if(map[y][x] == 7)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 80, 0, 96, 16, terrainSpriteSheet);
+                else if(map[y][x] == 8)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 0, 112, 16, terrainSpriteSheet);
+                else if(map[y][x] == 9)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 112, 0, 128, 16, terrainSpriteSheet);
+                else if(map[y][x] == 10)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 80, 16, 96, 32, terrainSpriteSheet);
+                else if(map[y][x] == 16)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 16, 112, 32, terrainSpriteSheet);
+                else if(map[y][x] == 17)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 112, 16, 128, 32, terrainSpriteSheet);
+                else if(map[y][x] == 18)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 80, 32, 96, 48, terrainSpriteSheet);
+                else if(map[y][x] == 19)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 32, 112, 48, terrainSpriteSheet);
+                else if(map[y][x] == 20)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 112, 32, 128, 48, terrainSpriteSheet);
+                
+                //wall
+                else if(map[y][x] == 21)
+                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0, 32, 16, 48, terrainSpriteSheet);
+
 
                 //draw decor
                 /*if (decor[y][x] == 1)

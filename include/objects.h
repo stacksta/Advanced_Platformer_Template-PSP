@@ -1,6 +1,12 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
+typedef struct Collider
+{
+    float x, y;
+    float width, height;
+} Collider;
+
 typedef struct Player
 {
     float x, y;
@@ -26,6 +32,10 @@ typedef struct Enemy
     bool isRight;
     bool isAttack;
     bool isDead;
+
+    Collider colliderLeft;
+    Collider colliderRight;
+    Collider feet;
 } Enemy;
 
 typedef struct Floor
@@ -38,12 +48,5 @@ typedef struct Camera
 {
     float x, y;
 } Camera;
-
-typedef struct Collider
-{
-    float x, y;
-    float width, height;
-} Collider;
-
 
 #endif
