@@ -1,6 +1,9 @@
 # Advanced Platformer Template for the PSP
 -------------------------------------------------------------------------------------------------------------
 
+<img src="https://raw.githubusercontent.com/stacksta/Advanced_Platformer_Template-PSP/master/img/platformer1.png" alt="preview_1" width="480" height="272"/>
+<img src="https://raw.githubusercontent.com/stacksta/Advanced_Platformer_Template-PSP/master/img/platformer2.png" alt="preview_1" width="480" height="272"/>
+
 ### TODO
 
 - [✔] Scrolling Camera
