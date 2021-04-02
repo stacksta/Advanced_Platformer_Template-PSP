@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 
     triTimer *deltaTime = triTimerCreate();
 
-    //bool test = false;
+    bool fixPlatformCollision = true;
 
     while (isRunning())
     {
@@ -205,6 +205,7 @@ int main(int argc, char *argv[])
             player.jumpHeight -= 10.0f;
 
             camera.y += 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
+            fixPlatformCollision = false;
         }
 
         //floor collision
@@ -228,6 +229,11 @@ int main(int argc, char *argv[])
         {
             //player.y += gravity * triTimerPeekDeltaTime(deltaTime);
             camera.y -= gravity * triTimerPeekDeltaTime(deltaTime);
+        }
+        if (!fixPlatformCollision && player.onFloor)
+        {
+            camera.y += 5.0f;
+            fixPlatformCollision = true;
         }
         //wall collision
         if (checkPlayerFloorCollision(&playerRight, &floor1, &camera) || checkPlayerFloorCollision(&playerRight, &floor2, &camera) || checkPlayerFloorCollision(&playerRight, &rightWall, &camera))
