@@ -3,45 +3,45 @@
 
 #include "objects.h"
 
-bool checkPlayerFloorCollision(Collider *p, Floor *f, Camera *c)
+bool checkPlayerFloorCollision(Collider *p, Floor *f)
 {
-    if (p->x < f->x + f->width + c->x &&
-        p->x + p->width > f->x + c->x &&
-        p->y < f->y + f->height + c->y &&
-        p->y + p->height > f->y + c->y)
+    if (p->x < f->x + f->width &&
+        p->x + p->width > f->x  &&
+        p->y < f->y + f->height  &&
+        p->y + p->height > f->y)
         return true;
     else
         return false;
 }
 
-bool checkPlayerEnemyCollision(Collider *p, Enemy *e, Camera *c)
+bool checkPlayerEnemyCollision(Collider *p, Enemy *e)
 {
-    if (p->x < e->x + e->width + c->x &&
-        p->x + p->width > e->x + c->x &&
-        p->y < e->y + e->height + c->y &&
-        p->y + p->height > e->y + c->y)
+    if (p->x < e->x + e->width &&
+        p->x + p->width > e->x &&
+        p->y < e->y + e->height &&
+        p->y + p->height > e->y)
         return true;
     else
         return false;
 }
 
-bool checkPlayerCollision(Collider *p, Collider *e, Camera *c)
+bool checkPlayerCollision(Collider *p, Collider *e)
 {
-    if (p->x < e->x + e->width + c->x &&
-        p->x + p->width > e->x + c->x &&
-        p->y < e->y + e->height + c->y &&
-        p->y + p->height > e->y + c->y)
+    if (p->x < e->x + e->width &&
+        p->x + p->width > e->x &&
+        p->y < e->y + e->height &&
+        p->y + p->height > e->y)
         return true;
     else
         return false;
 }
 
-bool checkCollision(Collider *p, Floor *f, Camera *c)
+bool checkCollision(Collider *p, Floor *f)
 {
-    if (p->x + c->x < f->x + f->width + c->x &&
-        p->x + p->width + c->x > f->x + c->x &&
-        p->y + c->y < f->y + f->height + c->y &&
-        p->y + p->height + c->y > f->y + c->y)
+    if (p->x < f->x + f->width &&
+        p->x + p->width > f->x &&
+        p->y < f->y + f->height &&
+        p->y + p->height > f->y)
         return true;
     else
         return false;

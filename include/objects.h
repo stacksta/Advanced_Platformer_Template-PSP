@@ -47,6 +47,7 @@ typedef struct Floor
 typedef struct Camera
 {
     float x, y;
+    float width, height;
 } Camera;
 
 #endif

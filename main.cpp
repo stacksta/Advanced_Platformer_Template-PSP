@@ -39,32 +39,32 @@ float vfpu_sqrtf(float x)
 
 
 const int ROW = 10;
-const int COL = 30;
+const int COL = 32;
 
 int map[ROW][COL] = {
-        {22,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,22},    
-        {11, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,14},
-        {11, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,14},
-        {11, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,14},
-        {11, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 7, 9, 2, 1, 2, 1, 2, 1, 2, 1,14},
-        {11, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,10,17, 1, 2, 1, 2, 1, 2, 1, 2,14},
-        {11, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 7, 8, 8, 8, 9,17, 2, 1, 2, 1, 2, 1, 2, 1,14},
-        {22, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,15,10,16,16,16,17,17, 1, 2, 1, 2, 1, 2, 1, 2,14}, //floor
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11,18,19,19,19,20,12, 3, 3, 3, 3, 3, 3, 3, 3,22},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,22, 3, 3, 3, 3, 3,22, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        {22,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,22, 0, 0},    
+        {11, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,14, 0, 0},
+        {11, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,14, 0, 0},
+        {11, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,14, 0, 0},
+        {11, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 7, 9, 2, 1, 2, 1, 2, 1, 2, 1,14, 0, 0},
+        {11, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,10,17, 1, 2, 1, 2, 1, 2, 1, 2,14, 0, 0},
+        {11, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 7, 8, 8, 8, 9,17, 2, 1, 2, 1, 2, 1, 2, 1,14, 0, 0},
+        {22, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,15,10,16,16,16,17,17, 1, 2, 1, 2, 1, 2, 1, 2,14, 0, 0}, //floor
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11,18,19,19,19,20,12, 3, 3, 3, 3, 3, 3, 3, 3, 22, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,22, 3, 3, 3, 3, 3,22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
 
 int decor[ROW][COL] = {
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 1, 2, 0, 5, 6, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 3, 4, 0, 7, 8, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //floor
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 2, 0, 5, 6, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 3, 4, 0, 7, 8, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //floor
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
 
 
@@ -98,6 +98,8 @@ int main(int argc, char *argv[])
     Collider playerRight{player.x, player.y, 5.0f, 5.0f};
     Collider playerLeft{player.x, player.y, 5.0f, 5.0f};
 
+    //player.speed = 30.0f;
+
     Enemy en1{ 480.0f / 2.0f + 64.0f, 272.0f / 2.0f, 10.0f, 10.0f, 10.0f, false, false, false, false, false};
     en1.feet.x = en1.x; en1.feet.y = en1.y; en1.feet.width = en1.feet.height = 5.0f;
     en1.colliderLeft.x = en1.x; en1.colliderLeft.y = en1.y; en1.colliderLeft.width = en1.colliderLeft.height = 5.0f;
@@ -106,7 +108,7 @@ int main(int argc, char *argv[])
     std::vector<Enemy> enemyPool;
     enemyPool.push_back(en1);
 
-    Camera camera{0, 0};
+    Camera camera{0, 0, COL * 32, ROW * 32};
 
     float gravity = 100.0f;
 
@@ -130,6 +132,8 @@ int main(int argc, char *argv[])
     triImage *enemySpriteIdle = triImageLoad("assets/sprites/mushroom_Idle (32x32).png", 0);
     triImage *enemySpriteRun = triImageLoad("assets/sprites/mushroom_Run (32x32).png", 0);
 
+    triImage *sawSprite = triImageLoad("assets/sprites/saw_On (38x38).png", 0);
+
     // triImage *doorSprite = triImageLoad("assets/sprites/door_Idle.png", 0);
 
     // //animations
@@ -142,11 +146,11 @@ int main(int argc, char *argv[])
     triImageAnimation *playerAnimationHeart = triImageAnimationFromSheet(playerSpriteHeart, 18.0f, 14.0f, 8, 1, 100);
     triImageAnimationStart(playerAnimationHeart);
 
-    // triImageAnimation *enemyAnimationIdle = triImageAnimationFromSheet(enemySpriteIdle, 34.0f, 28.0f, 11, 1, 100);
-    // triImageAnimationStart(enemyAnimationIdle);
-
     triImageAnimation *enemyAnimationRun = triImageAnimationFromSheet(enemySpriteRun, 32.0f, 32.0f, 16, 1, 100);
     triImageAnimationStart(enemyAnimationRun);
+
+    triImageAnimation *sawAnimationRun = triImageAnimationFromSheet(sawSprite, 38.0f, 38.0f, 8, 1, 100);
+    triImageAnimationStart(sawAnimationRun);
 
     triTimer *deltaTime = triTimerCreate();
 
@@ -164,19 +168,15 @@ int main(int argc, char *argv[])
         {
             if (pad.Buttons & PSP_CTRL_RIGHT)
             {
-                //player.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
+                player.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
                 player.isMoving = true;
                 player.isRight = true;
-
-                camera.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
             }
             else if (pad.Buttons & PSP_CTRL_LEFT)
             {
-                //player.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
+                player.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
                 player.isMoving = true;
                 player.isRight = false;
-
-                camera.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
             }
             if (pad.Buttons & PSP_CTRL_UP && player.onFloor)
             {
@@ -189,6 +189,19 @@ int main(int argc, char *argv[])
             player.isMoving = false;
             //player.isAttack = false;
         }
+        
+        camera.x = player.x - (COL + 10 * 32 * 0.5);
+        camera.y = player.y - (ROW * 32 * 0.5);
+
+        if(camera.x < 0)
+            camera.x = 0;
+        if(camera.y < 0)
+            camera.y = 0;
+
+        if(camera.x > camera.width)
+            camera.x = camera.width;
+        if(camera.y > camera.height)
+            camera.y = camera.height;
 
         playerFeet.x = player.x + 10.0f;
         playerFeet.y = player.y + 10.0f;
@@ -201,15 +214,14 @@ int main(int argc, char *argv[])
 
         if (player.isJump)
         {
-            //player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
+            player.y -= 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
             player.jumpHeight -= 10.0f;
 
-            camera.y += 1.0f * player.jumpHeight * triTimerPeekDeltaTime(deltaTime);
             fixPlatformCollision = false;
         }
 
         //floor collision
-        if (checkPlayerFloorCollision(&playerFeet, &floor, &camera) || checkPlayerFloorCollision(&playerFeet, &floor1, &camera) || checkPlayerFloorCollision(&playerFeet, &floor2, &camera) || checkPlayerFloorCollision(&playerFeet, &floor3, &camera))
+        if (checkPlayerFloorCollision(&playerFeet, &floor) || checkPlayerFloorCollision(&playerFeet, &floor1) || checkPlayerFloorCollision(&playerFeet, &floor2) || checkPlayerFloorCollision(&playerFeet, &floor3))
         {
             // floor detected
             player.onFloor = true;
@@ -227,23 +239,23 @@ int main(int argc, char *argv[])
 
         if (!player.onFloor)
         {
-            //player.y += gravity * triTimerPeekDeltaTime(deltaTime);
-            camera.y -= gravity * triTimerPeekDeltaTime(deltaTime);
+            player.y += gravity * triTimerPeekDeltaTime(deltaTime);
         }
         if (!fixPlatformCollision && player.onFloor)
         {
-            camera.y += 5.0f;
+            player.y -= 5.0f;
             fixPlatformCollision = true;
         }
         //wall collision
-        if (checkPlayerFloorCollision(&playerRight, &floor1, &camera) || checkPlayerFloorCollision(&playerRight, &floor2, &camera) || checkPlayerFloorCollision(&playerRight, &rightWall, &camera))
+        if (checkPlayerFloorCollision(&playerRight, &floor1) || checkPlayerFloorCollision(&playerRight, &floor2) || checkPlayerFloorCollision(&playerRight, &rightWall))
         {
-            camera.x += 5.0f;
+            player.x -= 5.0f;
         }
-        if (checkPlayerFloorCollision(&playerLeft, &floor1, &camera) || checkPlayerFloorCollision(&playerLeft, &floor2, &camera) || checkPlayerFloorCollision(&playerLeft, &leftWall, &camera))
+        if (checkPlayerFloorCollision(&playerLeft, &floor1) || checkPlayerFloorCollision(&playerLeft, &floor2) || checkPlayerFloorCollision(&playerLeft, &leftWall))
         {
-            camera.x -= 5.0f;
+            player.x += 5.0f;
         }
+
 
         en1.feet.x = en1.x;
         en1.feet.y = en1.y + 10.f;
@@ -254,7 +266,7 @@ int main(int argc, char *argv[])
         en1.colliderRight.x = en1.x + 10.f;
         en1.colliderRight.y = en1.y;
 
-        if(checkCollision(&en1.feet, &floor, &camera))
+        if(checkCollision(&en1.feet, &floor))
         {
             en1.onFloor = true;
         }
@@ -265,24 +277,24 @@ int main(int argc, char *argv[])
         {
             en1.y += gravity * triTimerPeekDeltaTime(deltaTime);
         }
-        if(checkCollision(&en1.colliderRight, &floor1, &camera))
+        if(checkCollision(&en1.colliderRight, &floor1))
         {
             en1.x -= 1.0f;
         }
 
         /*ai*/
-        float distance = getDistance(player.x, player.y, en1.x + camera.x, en1.y + camera.y);
+        float distance = getDistance(player.x, player.y, en1.x - camera.x, en1.y - camera.y);
         if(!en1.isDead)
         {
             if (distance < 150.0f)
             {
-                if (player.x < en1.x + camera.x)
+                if (player.x < en1.x - camera.x)
                 {
                     en1.x -= 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
                     //en1.isAttack = false;
                 }
-                else if (player.x > en1.x + camera.x)
+                else if (player.x > en1.x - camera.x)
                 {
                     en1.x += 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
@@ -300,7 +312,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        if(checkPlayerEnemyCollision(&playerFeet, &en1, &camera) && !en1.isDead)
+        if(checkPlayerEnemyCollision(&playerFeet, &en1) && !en1.isDead)
         {
             if(player.isJump)
             {
@@ -311,17 +323,17 @@ int main(int argc, char *argv[])
                 player.jumpHeight = 420.0f;
             }
         }
-        if(checkPlayerCollision(&playerRight, &en1.colliderLeft, &camera) && !en1.isDead)
+        if(checkPlayerCollision(&playerRight, &en1.colliderLeft) && !en1.isDead)
         {
-            camera.x += 1.0f * 1000.0f * triTimerPeekDeltaTime(deltaTime);
+            player.x -= 1.0f * 1000.0f * triTimerPeekDeltaTime(deltaTime);
             player.isJump = true;
             player.onFloor = false;
             player.jumpHeight = 250.0f;
             player.health--;
         }
-        if(checkPlayerCollision(&playerLeft, &en1.colliderRight, &camera) && !en1.isDead)
+        if(checkPlayerCollision(&playerLeft, &en1.colliderRight) && !en1.isDead)
         {
-            camera.x -= 1.0f * 1000.0f * triTimerPeekDeltaTime(deltaTime);
+            player.x += 1.0f * 1000.0f * triTimerPeekDeltaTime(deltaTime);
             player.isJump = true;
             player.onFloor = false;
             player.jumpHeight = 250.0f;
@@ -333,71 +345,71 @@ int main(int argc, char *argv[])
             for (int x = 0; x < COL; x++)
             {
                 if(map[y][x] == 1)//bbb8d0 //aabace //bccbd5
-                    triDrawRect(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0xffcebaaa);
+                    triDrawRect(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0xffcebaaa);
                 else if(map[y][x] == 2)//bccbd5
-                    triDrawRect(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0xffd5cbbc);
+                    triDrawRect(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0xffd5cbbc);
                 else if(map[y][x] == 3)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 16, 0, 32, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 16, 0, 32, 16, terrainSpriteSheet);
                 else if(map[y][x] == 12)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0, 0, 16, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0, 0, 16, 16, terrainSpriteSheet);
                 else if(map[y][x] == 15)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 32, 0, 48, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 32, 0, 48, 16, terrainSpriteSheet);
                 else if(map[y][x] == 11)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 32, 16, 48, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 32, 16, 48, 32, terrainSpriteSheet);
                 else if(map[y][x] == 14)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0, 16, 16, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0, 16, 16, 32, terrainSpriteSheet);
                 else if(map[y][x] == 7)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 80, 0, 96, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 80, 0, 96, 16, terrainSpriteSheet);
                 else if(map[y][x] == 8)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 0, 112, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 96, 0, 112, 16, terrainSpriteSheet);
                 else if(map[y][x] == 9)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 112, 0, 128, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 112, 0, 128, 16, terrainSpriteSheet);
                 else if(map[y][x] == 10)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 80, 16, 96, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 80, 16, 96, 32, terrainSpriteSheet);
                 else if(map[y][x] == 16)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 16, 112, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 96, 16, 112, 32, terrainSpriteSheet);
                 else if(map[y][x] == 17)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 112, 16, 128, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 112, 16, 128, 32, terrainSpriteSheet);
                 else if(map[y][x] == 18)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 80, 32, 96, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 80, 32, 96, 48, terrainSpriteSheet);
                 else if(map[y][x] == 19)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 96, 32, 112, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 96, 32, 112, 48, terrainSpriteSheet);
                 else if(map[y][x] == 20)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 112, 32, 128, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 112, 32, 128, 48, terrainSpriteSheet);
                 
                 //wall
                 else if(map[y][x] == 21)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 0, 32, 16, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0, 32, 16, 48, terrainSpriteSheet);
                 else if(map[y][x] == 13)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 16, 32, 32, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 16, 32, 32, 48, terrainSpriteSheet);
                 
                 //block
                 else if(map[y][x] == 22)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 176, 32, 192, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 176, 32, 192, 48, terrainSpriteSheet);
 
 
                 //draw decor
                 /*if (decor[y][x] == 1)
-                    triDrawImage(x * 32 + camera.x, y * 32 + camera.y, 32, 32, 64, 96, 96, 128, decorSpriteSheet);
+                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 64, 96, 96, 128, decorSpriteSheet);
                 */
             }
         }
         
         //draw floor
-        //triDrawRect(floor.x + camera.x, floor.y + camera.y, floor.width, floor.height, 0xff00ffff);
-        //triDrawRect(floor1.x + camera.x, floor1.y + camera.y, floor1.width, floor1.height, 0xff00ffff);
-        //triDrawRect(floor2.x + camera.x, floor2.y + camera.y, floor2.width, floor2.height, 0xff00ffff);
-        //triDrawRect(floor3.x + camera.x, floor3.y + camera.y, floor3.width, floor3.height, 0xff00ffff);
+        //triDrawRect(floor.x - camera.x, floor.y - camera.y, floor.width, floor.height, 0xff00ffff);
+        //triDrawRect(floor1.x - camera.x, floor1.y - camera.y, floor1.width, floor1.height, 0xff00ffff);
+        //triDrawRect(floor2.x - camera.x, floor2.y - camera.y, floor2.width, floor2.height, 0xff00ffff);
+        //triDrawRect(floor3.x - camera.x, floor3.y - camera.y, floor3.width, floor3.height, 0xff00ffff);
 
 
-        //triDrawRect(leftWall.x + camera.x, leftWall.y + camera.y, leftWall.width, leftWall.height, 0xff00ffff);
-        //triDrawRect(rightWall.x + camera.x, rightWall.y + camera.y, rightWall.width, rightWall.height, 0xff00ffff);
+        //triDrawRect(leftWall.x - camera.x, leftWall.y - camera.y, leftWall.width, leftWall.height, 0xff00ffff);
+        //triDrawRect(rightWall.x - camera.x, rightWall.y - camera.y, rightWall.width, rightWall.height, 0xff00ffff);
 
         //draw door
-        //triDrawSprite(80.0f + camera.x, 272.0f / 2.0f + 32.0f + camera.y, 0, 0, doorSprite);
+        //triDrawSprite(80.0f - camera.x, 272.0f / 2.0f + 32.0f - camera.y, 0, 0, doorSprite);
 
         //draw enemy
-        //triDrawRect(en1.x + camera.x, en1.y + camera.y, en1.width, en1.height, 0xff0000ff);
+        //triDrawRect(en1.x - camera.x, en1.y - camera.y, en1.width, en1.height, 0xff0000ff);
 
 
         //draw HUD
@@ -416,13 +428,11 @@ int main(int argc, char *argv[])
         
         if (!en1.isMoving && !en1.isDead)
         {
-            //triDrawImageAnimation(en1.x - 32.0f / 2.0f + en1.width - 10.0f + camera.x, en1.y - 32.0f / 2.0f + camera.y, enemyAnimationIdle);
-            //triImageAnimationUpdate(enemyAnimationIdle);
-            triDrawSprite(en1.x - 32.0f / 2.0f + en1.width - 10.0f + camera.x, en1.y - 32.0f / 2.0f + camera.y, 0, 0, enemySpriteIdle);
+            triDrawSprite(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.x, en1.y - 32.0f / 2.0f - camera.y, 0, 0, enemySpriteIdle);
         }
         else if (en1.isMoving && !en1.isDead)
         {
-            triDrawImageAnimation(en1.x - 32.0f / 2.0f + en1.width - 10.0f + camera.x, en1.y - 32.0f / 2.0f + camera.y, enemyAnimationRun);
+            triDrawImageAnimation(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.x, en1.y - 32.0f / 2.0f - camera.y, enemyAnimationRun);
             triImageAnimationUpdate(enemyAnimationRun);
         }
 
@@ -434,38 +444,41 @@ int main(int argc, char *argv[])
         
         if (!player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width, player.y - 32.0f / 2.0f, playerAnimationIdle);
+            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.x, player.y - 32.0f / 2.0f - camera.y, playerAnimationIdle);
             triImageAnimationUpdate(playerAnimationIdle);
         }
         else if (player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width, player.y - 32.0f / 2.0f, playerAnimationRun);
+            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.x, player.y - 32.0f / 2.0f - camera.y, playerAnimationRun);
             triImageAnimationUpdate(playerAnimationRun);
         }
         else
         {
-            triDrawSprite(player.x - 32.0f / 2.0f + player.width, player.y - 32.0f / 2.0f, 0, 0, playerSpriteJump);
+            triDrawSprite(player.x - 32.0f / 2.0f + player.width - camera.x, player.y - 32.0f / 2.0f - camera.y, 0, 0, playerSpriteJump);
         }
+
+            //triDrawImageAnimation(480/2, 272/2, sawAnimationRun);
+            //triImageAnimationUpdate(sawAnimationRun);
 
 /*
         triDrawRect(playerLeft.x, playerLeft.y, playerLeft.width, playerLeft.height, 0xff0000ff);
         triDrawRect(playerRight.x, playerRight.y, playerRight.width, playerRight.height, 0xff0000ff);
         triDrawRect(playerFeet.x, playerFeet.y, playerFeet.width, playerFeet.height, 0xff0000ff);
 
-        triDrawRect(enLeft1.x + camera.x, enLeft1.y + camera.y, enLeft1.width, enLeft1.height, 0xff0000ff);
-        triDrawRect(enRight1.x + camera.x, enRight1.y + camera.y, enRight1.width, enRight1.height, 0xff0000ff);
-        triDrawRect(enFeet1.x + camera.x, enFeet1.y + camera.y, enFeet1.width, enFeet1.height, 0xff0000ff);
+        triDrawRect(enLeft1.x - camera.x, enLeft1.y - camera.y, enLeft1.width, enLeft1.height, 0xff0000ff);
+        triDrawRect(enRight1.x - camera.x, enRight1.y - camera.y, enRight1.width, enRight1.height, 0xff0000ff);
+        triDrawRect(enFeet1.x - camera.x, enFeet1.y - camera.y, enFeet1.width, enFeet1.height, 0xff0000ff);
 */
 
- /*       triFontActivate(0);
+        triFontActivate(0);
         triFontPrintf(0, 0, 0xFFFFFFFF, "FPS: %.2f - MAX: %.2f - MIN: %.2f", triFps(), triFpsMax(), triFpsMin());
         triFontPrintf(0, 10, 0xFFFFFFFF, "CPU: %.2f%% - GPU: %.2f%%", triCPULoad(), triGPULoad());
         triFontPrintf(0, 20, 0xFFFFFFFF, "Player: x = %.2f , y = %.2f", player.x - camera.x, player.y - camera.y);
         triFontPrintf(0, 30, 0xFFFFFFFF, "onFloor: %d", player.onFloor);
         triFontPrintf(0, 40, 0xFFFFFFFF, "Camera: x = %.2f , y = %.2f", camera.x, camera.y);
-        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x + camera.x, en1.y + camera.y));
+        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x - camera.x, en1.y - camera.y));
         triFontPrintf(0, 60, 0xFFFFFFFF, "Health: %d", player.health);
-*/
+
 
         triSwapbuffers();
     }
@@ -479,7 +492,7 @@ int main(int argc, char *argv[])
     /*triImageFree(playerSpriteAttack);
     triImageFree(decorSpriteSheet);*/
     triImageFree(terrainSpriteSheet);
-    /*triImageFree(doorSprite);*/
+    triImageFree(sawSprite);
     triTimerFree(deltaTime);
     triClose();
     triMemoryCheck();
