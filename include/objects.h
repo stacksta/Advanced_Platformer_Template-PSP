@@ -44,10 +44,4 @@ typedef struct Floor
     float width, height;
 } Floor;
 
-typedef struct Camera
-{
-    float x, y;
-    float width, height;
-} Camera;
-
 #endif

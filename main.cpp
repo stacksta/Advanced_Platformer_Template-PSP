@@ -9,6 +9,7 @@
 #include "callback.h"
 #include "objects.h"
 #include "collision.h"
+#include "camera.h"
 
 extern "C"
 {
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
     std::vector<Enemy> enemyPool;
     enemyPool.push_back(en1);
 
-    Camera camera{0, 0, COL * 32, ROW * 32};
+    Camera camera = Camera(0, 0, COL * 32, ROW * 32);
 
     float gravity = 100.0f;
 
@@ -190,18 +191,8 @@ int main(int argc, char *argv[])
             //player.isAttack = false;
         }
         
-        camera.x = player.x - (COL + 10 * 32 * 0.5);
-        camera.y = player.y - (ROW * 32 * 0.5);
+        camera.followTarget(player.x, player.y, player.width, COL, ROW, 32);
 
-        if(camera.x < 0)
-            camera.x = 0;
-        if(camera.y < 0)
-            camera.y = 0;
-
-        if(camera.x > camera.width)
-            camera.x = camera.width;
-        if(camera.y > camera.height)
-            camera.y = camera.height;
 
         playerFeet.x = player.x + 10.0f;
         playerFeet.y = player.y + 10.0f;
@@ -229,7 +220,7 @@ int main(int argc, char *argv[])
             player.jumpHeight = 400.0f;
 
             //player.y -= 3.0f;
-            //camera.y += 3.0f;
+            //camera.getY() += 3.0f;
         }
         else
         {
@@ -240,6 +231,7 @@ int main(int argc, char *argv[])
         if (!player.onFloor)
         {
             player.y += gravity * triTimerPeekDeltaTime(deltaTime);
+            //camera.getY() -= gravity * triTimerPeekDeltaTime(deltaTime);
         }
         if (!fixPlatformCollision && player.onFloor)
         {
@@ -283,18 +275,18 @@ int main(int argc, char *argv[])
         }
 
         /*ai*/
-        float distance = getDistance(player.x, player.y, en1.x - camera.x, en1.y - camera.y);
+        float distance = getDistance(player.x, player.y, en1.x - camera.getX(), en1.y - camera.getY());
         if(!en1.isDead)
         {
             if (distance < 150.0f)
             {
-                if (player.x < en1.x - camera.x)
+                if (player.x < en1.x - camera.getX())
                 {
                     en1.x -= 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
                     //en1.isAttack = false;
                 }
-                else if (player.x > en1.x - camera.x)
+                else if (player.x > en1.x - camera.getX())
                 {
                     en1.x += 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
@@ -345,71 +337,71 @@ int main(int argc, char *argv[])
             for (int x = 0; x < COL; x++)
             {
                 if(map[y][x] == 1)//bbb8d0 //aabace //bccbd5
-                    triDrawRect(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0xffcebaaa);
+                    triDrawRect(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 0xffcebaaa);
                 else if(map[y][x] == 2)//bccbd5
-                    triDrawRect(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0xffd5cbbc);
+                    triDrawRect(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 0xffd5cbbc);
                 else if(map[y][x] == 3)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 16, 0, 32, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 16, 0, 32, 16, terrainSpriteSheet);
                 else if(map[y][x] == 12)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0, 0, 16, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 0, 0, 16, 16, terrainSpriteSheet);
                 else if(map[y][x] == 15)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 32, 0, 48, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 32, 0, 48, 16, terrainSpriteSheet);
                 else if(map[y][x] == 11)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 32, 16, 48, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 32, 16, 48, 32, terrainSpriteSheet);
                 else if(map[y][x] == 14)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0, 16, 16, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 0, 16, 16, 32, terrainSpriteSheet);
                 else if(map[y][x] == 7)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 80, 0, 96, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 80, 0, 96, 16, terrainSpriteSheet);
                 else if(map[y][x] == 8)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 96, 0, 112, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 96, 0, 112, 16, terrainSpriteSheet);
                 else if(map[y][x] == 9)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 112, 0, 128, 16, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 112, 0, 128, 16, terrainSpriteSheet);
                 else if(map[y][x] == 10)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 80, 16, 96, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 80, 16, 96, 32, terrainSpriteSheet);
                 else if(map[y][x] == 16)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 96, 16, 112, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 96, 16, 112, 32, terrainSpriteSheet);
                 else if(map[y][x] == 17)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 112, 16, 128, 32, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 112, 16, 128, 32, terrainSpriteSheet);
                 else if(map[y][x] == 18)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 80, 32, 96, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 80, 32, 96, 48, terrainSpriteSheet);
                 else if(map[y][x] == 19)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 96, 32, 112, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 96, 32, 112, 48, terrainSpriteSheet);
                 else if(map[y][x] == 20)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 112, 32, 128, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 112, 32, 128, 48, terrainSpriteSheet);
                 
                 //wall
                 else if(map[y][x] == 21)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 0, 32, 16, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 0, 32, 16, 48, terrainSpriteSheet);
                 else if(map[y][x] == 13)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 16, 32, 32, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 16, 32, 32, 48, terrainSpriteSheet);
                 
                 //block
                 else if(map[y][x] == 22)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 176, 32, 192, 48, terrainSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 176, 32, 192, 48, terrainSpriteSheet);
 
 
                 //draw decor
                 /*if (decor[y][x] == 1)
-                    triDrawImage(x * 32 - camera.x, y * 32 - camera.y, 32, 32, 64, 96, 96, 128, decorSpriteSheet);
+                    triDrawImage(x * 32 - camera.getX(), y * 32 - camera.getY(), 32, 32, 64, 96, 96, 128, decorSpriteSheet);
                 */
             }
         }
         
         //draw floor
-        //triDrawRect(floor.x - camera.x, floor.y - camera.y, floor.width, floor.height, 0xff00ffff);
-        //triDrawRect(floor1.x - camera.x, floor1.y - camera.y, floor1.width, floor1.height, 0xff00ffff);
-        //triDrawRect(floor2.x - camera.x, floor2.y - camera.y, floor2.width, floor2.height, 0xff00ffff);
-        //triDrawRect(floor3.x - camera.x, floor3.y - camera.y, floor3.width, floor3.height, 0xff00ffff);
+        //triDrawRect(floor.x - camera.getX(), floor.y - camera.getY(), floor.width, floor.height, 0xff00ffff);
+        //triDrawRect(floor1.x - camera.getX(), floor1.y - camera.getY(), floor1.width, floor1.height, 0xff00ffff);
+        //triDrawRect(floor2.x - camera.getX(), floor2.y - camera.getY(), floor2.width, floor2.height, 0xff00ffff);
+        //triDrawRect(floor3.x - camera.getX(), floor3.y - camera.getY(), floor3.width, floor3.height, 0xff00ffff);
 
 
-        //triDrawRect(leftWall.x - camera.x, leftWall.y - camera.y, leftWall.width, leftWall.height, 0xff00ffff);
-        //triDrawRect(rightWall.x - camera.x, rightWall.y - camera.y, rightWall.width, rightWall.height, 0xff00ffff);
+        //triDrawRect(leftWall.x - camera.getX(), leftWall.y - camera.getY(), leftWall.width, leftWall.height, 0xff00ffff);
+        //triDrawRect(rightWall.x - camera.getX(), rightWall.y - camera.getY(), rightWall.width, rightWall.height, 0xff00ffff);
 
         //draw door
-        //triDrawSprite(80.0f - camera.x, 272.0f / 2.0f + 32.0f - camera.y, 0, 0, doorSprite);
+        //triDrawSprite(80.0f - camera.getX(), 272.0f / 2.0f + 32.0f - camera.getY(), 0, 0, doorSprite);
 
         //draw enemy
-        //triDrawRect(en1.x - camera.x, en1.y - camera.y, en1.width, en1.height, 0xff0000ff);
+        //triDrawRect(en1.x - camera.getX(), en1.y - camera.getY(), en1.width, en1.height, 0xff0000ff);
 
 
         //draw HUD
@@ -428,11 +420,11 @@ int main(int argc, char *argv[])
         
         if (!en1.isMoving && !en1.isDead)
         {
-            triDrawSprite(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.x, en1.y - 32.0f / 2.0f - camera.y, 0, 0, enemySpriteIdle);
+            triDrawSprite(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.getX(), en1.y - 32.0f / 2.0f - camera.getY(), 0, 0, enemySpriteIdle);
         }
         else if (en1.isMoving && !en1.isDead)
         {
-            triDrawImageAnimation(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.x, en1.y - 32.0f / 2.0f - camera.y, enemyAnimationRun);
+            triDrawImageAnimation(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.getX(), en1.y - 32.0f / 2.0f - camera.getY(), enemyAnimationRun);
             triImageAnimationUpdate(enemyAnimationRun);
         }
 
@@ -444,17 +436,17 @@ int main(int argc, char *argv[])
         
         if (!player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.x, player.y - 32.0f / 2.0f - camera.y, playerAnimationIdle);
+            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), playerAnimationIdle);
             triImageAnimationUpdate(playerAnimationIdle);
         }
         else if (player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.x, player.y - 32.0f / 2.0f - camera.y, playerAnimationRun);
+            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), playerAnimationRun);
             triImageAnimationUpdate(playerAnimationRun);
         }
         else
         {
-            triDrawSprite(player.x - 32.0f / 2.0f + player.width - camera.x, player.y - 32.0f / 2.0f - camera.y, 0, 0, playerSpriteJump);
+            triDrawSprite(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), 0, 0, playerSpriteJump);
         }
 
             //triDrawImageAnimation(480/2, 272/2, sawAnimationRun);
@@ -465,18 +457,18 @@ int main(int argc, char *argv[])
         triDrawRect(playerRight.x, playerRight.y, playerRight.width, playerRight.height, 0xff0000ff);
         triDrawRect(playerFeet.x, playerFeet.y, playerFeet.width, playerFeet.height, 0xff0000ff);
 
-        triDrawRect(enLeft1.x - camera.x, enLeft1.y - camera.y, enLeft1.width, enLeft1.height, 0xff0000ff);
-        triDrawRect(enRight1.x - camera.x, enRight1.y - camera.y, enRight1.width, enRight1.height, 0xff0000ff);
-        triDrawRect(enFeet1.x - camera.x, enFeet1.y - camera.y, enFeet1.width, enFeet1.height, 0xff0000ff);
+        triDrawRect(enLeft1.x - camera.getX(), enLeft1.y - camera.getY(), enLeft1.width, enLeft1.height, 0xff0000ff);
+        triDrawRect(enRight1.x - camera.getX(), enRight1.y - camera.getY(), enRight1.width, enRight1.height, 0xff0000ff);
+        triDrawRect(enFeet1.x - camera.getX(), enFeet1.y - camera.getY(), enFeet1.width, enFeet1.height, 0xff0000ff);
 */
 
         triFontActivate(0);
         triFontPrintf(0, 0, 0xFFFFFFFF, "FPS: %.2f - MAX: %.2f - MIN: %.2f", triFps(), triFpsMax(), triFpsMin());
         triFontPrintf(0, 10, 0xFFFFFFFF, "CPU: %.2f%% - GPU: %.2f%%", triCPULoad(), triGPULoad());
-        triFontPrintf(0, 20, 0xFFFFFFFF, "Player: x = %.2f , y = %.2f", player.x - camera.x, player.y - camera.y);
+        triFontPrintf(0, 20, 0xFFFFFFFF, "Player: x = %.2f , y = %.2f", player.x - camera.getX(), player.y - camera.getY());
         triFontPrintf(0, 30, 0xFFFFFFFF, "onFloor: %d", player.onFloor);
-        triFontPrintf(0, 40, 0xFFFFFFFF, "Camera: x = %.2f , y = %.2f", camera.x, camera.y);
-        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x - camera.x, en1.y - camera.y));
+        triFontPrintf(0, 40, 0xFFFFFFFF, "Camera: x = %.2f , y = %.2f", camera.getX(), camera.getY());
+        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x - camera.getX(), en1.y - camera.getY()));
         triFontPrintf(0, 60, 0xFFFFFFFF, "Health: %d", player.health);
 
 
