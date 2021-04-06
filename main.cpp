@@ -25,19 +25,6 @@ extern "C"
 PSP_MODULE_INFO("PLATFORMER", 0x0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
-/*from libpspmath*/
-float vfpu_sqrtf(float x)
-{
-    float result;
-    __asm__ volatile(
-        "mtv     %1, S000\n"
-        "vsqrt.s S000, S000\n"
-        "mfv     %0, S000\n"
-        : "=r"(result)
-        : "r"(x));
-    return result;
-}
-
 
 const int ROW = 10;
 const int COL = 32;
@@ -73,7 +60,7 @@ int decor[ROW][COL] = {
 float getDistance(float x1, float y1, float x2, float y2)
 {
     float a = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-    a = vfpu_sqrtf(a);
+    a = sqrtf(a);
     if (isnan(a) == 0)
         return a;
     else
@@ -219,8 +206,6 @@ int main(int argc, char *argv[])
             player.isJump = false;
             player.jumpHeight = 400.0f;
 
-            //player.y -= 3.0f;
-            //camera.getY() += 3.0f;
         }
         else
         {
@@ -231,7 +216,6 @@ int main(int argc, char *argv[])
         if (!player.onFloor)
         {
             player.y += gravity * triTimerPeekDeltaTime(deltaTime);
-            //camera.getY() -= gravity * triTimerPeekDeltaTime(deltaTime);
         }
         if (!fixPlatformCollision && player.onFloor)
         {

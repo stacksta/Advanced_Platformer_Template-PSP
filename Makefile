@@ -15,7 +15,7 @@ LIBS = -lstdc++ -lpspgum -lfreetype -lpng -ljpeg -lg -lc -lGL -lGLU -lglut -lz -
         -L${PSPDEV}/psp \
         -lpspdebug   -lpspgu -lpspctrl -lpspge -lpspirkeyb -lpsppower -lpsppower_driver \
         -lpspdisplay -lpsphprm  -lpspsdk -lpsprtc -lpspaudio -lpsputility \
-        -lpspnet_inet  -lc -lpspuser
+        -lpspnet_inet -lpspuser
 
 EXTRA_TARGETS = EBOOT.PBP
 PSP_EBOOT_TITLE = PLATFORMER
