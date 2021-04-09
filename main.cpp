@@ -20,6 +20,8 @@ extern "C"
 #include "triTimer.h"
 #include "triVAlloc.h"
 #include "triFont.h"
+
+#include "triGraphicsExt.h"
 }
 
 PSP_MODULE_INFO("PLATFORMER", 0x0, 1, 1);
@@ -88,7 +90,7 @@ int main(int argc, char *argv[])
 
     //player.speed = 30.0f;
 
-    Enemy en1{ 480.0f / 2.0f + 64.0f, 272.0f / 2.0f, 10.0f, 10.0f, 10.0f, false, false, false, false, false};
+    Enemy en1{ 480.0f / 2.0f + 64.0f, 272.0f / 2.0f, 10.0f, 10.0f, 10.0f, false, false, TRI_FLIP_NONE, false, false};
     en1.feet.x = en1.x; en1.feet.y = en1.y; en1.feet.width = en1.feet.height = 5.0f;
     en1.colliderLeft.x = en1.x; en1.colliderLeft.y = en1.y; en1.colliderLeft.width = en1.colliderLeft.height = 5.0f;
     en1.colliderRight.x = en1.x; en1.colliderRight.y = en1.y; en1.colliderRight.width = en1.colliderRight.height = 5.0f;
@@ -158,13 +160,13 @@ int main(int argc, char *argv[])
             {
                 player.x += 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
                 player.isMoving = true;
-                player.isRight = true;
+                player.isRight = TRI_FLIP_NONE;
             }
             else if (pad.Buttons & PSP_CTRL_LEFT)
             {
                 player.x -= 1.0f * player.speed * triTimerPeekDeltaTime(deltaTime);
                 player.isMoving = true;
-                player.isRight = false;
+                player.isRight = TRI_FLIP_V;
             }
             if (pad.Buttons & PSP_CTRL_UP && player.onFloor)
             {
@@ -269,12 +271,14 @@ int main(int argc, char *argv[])
                     en1.x -= 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
                     //en1.isAttack = false;
+                    en1.isRight = TRI_FLIP_NONE;
                 }
                 else if (player.x > en1.x - camera.getX())
                 {
                     en1.x += 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
                     //en1.isAttack = false;
+                    en1.isRight = TRI_FLIP_V;
                 }
                 else
                 {
@@ -404,15 +408,18 @@ int main(int argc, char *argv[])
         
         if (!en1.isMoving && !en1.isDead)
         {
-            triDrawSprite(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.getX(), en1.y - 32.0f / 2.0f - camera.getY(), 0, 0, enemySpriteIdle);
+            triDrawImageExt(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.getX(), en1.y - 32.0f / 2.0f - camera.getY(), 32, 32, 0, 0, 32, 32, en1.isRight, enemySpriteIdle);
         }
         else if (en1.isMoving && !en1.isDead)
         {
-            triDrawImageAnimation(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.getX(), en1.y - 32.0f / 2.0f - camera.getY(), enemyAnimationRun);
+            triDrawImageAnimationExt(en1.x - 32.0f / 2.0f + en1.width - 10.0f - camera.getX(), en1.y - 32.0f / 2.0f - camera.getY(), en1.isRight, enemyAnimationRun);
             triImageAnimationUpdate(enemyAnimationRun);
         }
 
         //triDrawImage(floor.x, floor.y, 32, 32, 64, 32, 96, 64, terrainSpriteSheet);
+        //triDrawImageExt(100, 100, 32, 32, 0, 0, 32, 32, TRI_FLIP_V, playerSpriteJump);
+        //triDrawImageAnimationExt(100, 100, TRI_FLIP_V, playerAnimationIdle);
+        //triImageAnimationUpdate(playerAnimationIdle);
 
         //draw player
         //triDrawRect(player.x, player.y, player.width, player.height, 0xff0000ff);
@@ -420,17 +427,17 @@ int main(int argc, char *argv[])
         
         if (!player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), playerAnimationIdle);
+            triDrawImageAnimationExt(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), player.isRight, playerAnimationIdle);
             triImageAnimationUpdate(playerAnimationIdle);
         }
         else if (player.isMoving && player.onFloor)
         {
-            triDrawImageAnimation(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), playerAnimationRun);
+            triDrawImageAnimationExt(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), player.isRight, playerAnimationRun);
             triImageAnimationUpdate(playerAnimationRun);
         }
         else
         {
-            triDrawSprite(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), 0, 0, playerSpriteJump);
+            triDrawImageExt(player.x - 32.0f / 2.0f + player.width - camera.getX(), player.y - 32.0f / 2.0f - camera.getY(), 32, 32, 0, 0, 32, 32, player.isRight, playerSpriteJump);
         }
 
             //triDrawImageAnimation(480/2, 272/2, sawAnimationRun);

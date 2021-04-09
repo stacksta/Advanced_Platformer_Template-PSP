@@ -18,7 +18,7 @@ typedef struct Player
     bool onFloor;
     bool isMoving;
     bool isJump;
-    bool isRight;
+    int isRight;
     bool isAttack;
 } Player;
 
@@ -29,7 +29,7 @@ typedef struct Enemy
     float speed;
     bool onFloor;
     bool isMoving;
-    bool isRight;
+    int isRight;
     bool isAttack;
     bool isDead;
 
