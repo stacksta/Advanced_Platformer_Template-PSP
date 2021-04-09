@@ -261,19 +261,19 @@ int main(int argc, char *argv[])
         }
 
         /*ai*/
-        float distance = getDistance(player.x, player.y, en1.x - camera.getX(), en1.y - camera.getY());
+        float distance = getDistance(player.x, player.y, en1.x, en1.y);
         if(!en1.isDead)
         {
             if (distance < 150.0f)
             {
-                if (player.x < en1.x - camera.getX())
+                if (player.x < en1.x)
                 {
                     en1.x -= 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
                     //en1.isAttack = false;
                     en1.isRight = TRI_FLIP_NONE;
                 }
-                else if (player.x > en1.x - camera.getX())
+                else if (player.x > en1.x)
                 {
                     en1.x += 1.0f * en1.speed * triTimerPeekDeltaTime(deltaTime);
                     en1.isMoving = true;
@@ -459,7 +459,7 @@ int main(int argc, char *argv[])
         triFontPrintf(0, 20, 0xFFFFFFFF, "Player: x = %.2f , y = %.2f", player.x - camera.getX(), player.y - camera.getY());
         triFontPrintf(0, 30, 0xFFFFFFFF, "onFloor: %d", player.onFloor);
         triFontPrintf(0, 40, 0xFFFFFFFF, "Camera: x = %.2f , y = %.2f", camera.getX(), camera.getY());
-        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x - camera.getX(), en1.y - camera.getY()));
+        triFontPrintf(0, 50, 0xFFFFFFFF, "Distance: %.2f", getDistance(player.x, player.y, en1.x, en1.y));
         triFontPrintf(0, 60, 0xFFFFFFFF, "Health: %d", player.health);
 
 
